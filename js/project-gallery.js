@@ -30,6 +30,8 @@ export function initProjectGallery() {
   const EPS_SCALE = 0.002;
   const EPS_MARGIN_PX = 0.6;
   const EPS_Z = 0.08;
+  /** Caption exit fade in page-projects.css (`0.24s`); buffer for class cleanup. */
+  const CAPTION_EXIT_MS = 240;
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const smoothed = new WeakMap();
@@ -48,6 +50,16 @@ export function initProjectGallery() {
   let stale = false;
   let needsPadding = true;
   let lastFocusedCard = null;
+  /** @type {WeakMap<Element, ReturnType<typeof setTimeout>>} */
+  const captionsExitingTimers = new WeakMap();
+
+  function clearCaptionsExitingTimer(card) {
+    const t = captionsExitingTimers.get(card);
+    if (t != null) {
+      clearTimeout(t);
+      captionsExitingTimers.delete(card);
+    }
+  }
 
   function updateCenterPadding() {
     const card = track.querySelector('.project-card');
@@ -64,6 +76,8 @@ export function initProjectGallery() {
 
   function scheduleCaptionsFor(card) {
     if (!card) return;
+    clearCaptionsExitingTimer(card);
+    card.classList.remove('project-card--captions-exiting');
     card.classList.add('project-card--captions-visible');
   }
 
@@ -140,8 +154,29 @@ export function initProjectGallery() {
     }
 
     if (best !== lastFocusedCard) {
+      const prev = lastFocusedCard;
+      if (prev) {
+        if (reducedMotion) {
+          clearCaptionsExitingTimer(prev);
+          prev.classList.remove('project-card--captions-exiting');
+          prev.classList.remove('project-card--captions-visible');
+        } else {
+          prev.classList.remove('project-card--captions-visible');
+          prev.classList.add('project-card--captions-exiting');
+          clearCaptionsExitingTimer(prev);
+          const tid = setTimeout(() => {
+            captionsExitingTimers.delete(prev);
+            prev.classList.remove('project-card--captions-exiting');
+          }, CAPTION_EXIT_MS + 25);
+          captionsExitingTimers.set(prev, tid);
+        }
+      }
       for (const c of cards) {
-        c.classList.remove('project-card--captions-visible');
+        if (c !== prev) {
+          clearCaptionsExitingTimer(c);
+          c.classList.remove('project-card--captions-visible');
+          c.classList.remove('project-card--captions-exiting');
+        }
       }
       lastFocusedCard = best;
       scheduleCaptionsFor(best);

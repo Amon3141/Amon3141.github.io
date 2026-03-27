@@ -1,4 +1,4 @@
-# personal-website
+# Personal Website
 
 You need a local HTTP server so `fetch()` can load the HTML fragments and modules resolve correctly (opening `index.html` as a file URL will not work).
 
