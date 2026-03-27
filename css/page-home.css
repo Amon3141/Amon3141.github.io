@@ -1,0 +1,188 @@
+/* =============================================================================
+   Home page (#page-home)
+   ============================================================================= */
+.book-page-home {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  max-width: 50rem;
+  margin: 0 auto;
+  min-height: 100%;
+  padding: 5rem 0rem 6rem 9rem;
+}
+
+.book-page-home__intro {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+  padding-right: 15rem;
+}
+
+.book-page-home__intro-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+  width: 100%;
+  position: relative;
+}
+
+.book-page-home__intro-inner {
+  max-width: 36rem;
+  width: 100%;
+}
+
+/* Same stacking layer as origami (below it); tweak top/right/left/transform to place. */
+.book-page-home__hello {
+  position: absolute;
+  z-index: 2;
+  right: -1.8rem; /* origami + 7.2 */
+  top: 9.2rem; /* origami + 6.2 */
+  left: auto;
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  pointer-events: none;
+  transform: rotate(-7deg);
+  transform-origin: 100% 100%;
+}
+
+.book-page-home__origami {
+  position: absolute;
+  right: -9rem;
+  top: 3rem;
+  z-index: 3;
+  width: 15rem;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  border-radius: 0;
+  line-height: 0;
+  transform: rotate(-7deg);
+  transform-origin: 100% 100%;
+  pointer-events: auto;
+}
+
+.book-page-home__origami canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+}
+
+.book-page-home__origami.is-reduced {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: auto;
+  min-height: 3.5rem;
+  width: 15rem;
+  padding: 0.65rem;
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  line-height: 1.45;
+  background: rgb(255 255 255 / 0.92);
+}
+
+/* =============================================================================
+   Middle — tablet only: origami position (text layout same as desktop)
+   ============================================================================= */
+@media (min-width: 641px) and (max-width: 750px) {
+  .book-page-home__intro {
+    padding-right: 9.5rem;
+  }
+
+  /* Same model as desktop: top + right, no bottom */
+  .book-page-home__origami {
+    bottom: auto;
+    left: auto;
+    right: -7rem;
+    top: 3rem;
+    width: min(13.5rem, 36vw);
+    transform: rotate(-7deg);
+    transform-origin: 100% 100%;
+  }
+
+  .book-page-home__hello {
+    right: -0.7rem; /* origami + 6.3 */
+    top: 8.8rem; /* origami + 5.8 */
+    transform: rotate(-7deg);
+    transform-origin: 100% 100%;
+  }
+}
+
+/* =============================================================================
+   Mobile
+   ============================================================================= */
+@media (max-width: 650px) {
+  .book-page-home {
+    padding: 1.5rem 2.5rem 4rem;
+    padding-left: max(2.5rem, env(safe-area-inset-left));
+    padding-right: max(2.5rem, env(safe-area-inset-right));
+    padding-bottom: max(4rem, env(safe-area-inset-bottom));
+  }
+
+  .book-page-home__intro {
+    flex: 1;
+    justify-content: center;
+    padding-right: 0;
+  }
+
+  .book-page-home__intro-inner {
+    position: relative;
+    padding-right: 0;
+    padding-top: 0.2rem;
+  }
+
+  .book-page-home__origami {
+    left: auto;
+    right: 0;
+    top: -10rem;
+    bottom: auto;
+    width: min(11.5rem, 52vw);
+    transform: rotate(-8deg);
+    transform-origin: 100% 0%;
+  }
+
+  .book-page-home__hello {
+    font-size: 0.9rem;
+    left: auto;
+    right: 4rem;
+    top: -5.3rem;
+    transform: rotate(-8deg);
+    transform-origin: 100% 0%;
+  }
+
+  .book-page-home__origami.is-reduced {
+    width: min(11.5rem, 52vw);
+    right: 0;
+    top: -3.2rem;
+    bottom: auto;
+    left: auto;
+    transform: none;
+    transform-origin: 100% 0%;
+    font-size: 0.65rem;
+    min-height: 3rem;
+    padding: 0.5rem 0.55rem;
+  }
+
+  .book-page-home__intro-inner:has(.book-page-home__origami.is-reduced) .book-page-home__hello {
+    top: -3.2rem;
+    transform: none;
+    transform-origin: 100% 0%;
+  }
+}

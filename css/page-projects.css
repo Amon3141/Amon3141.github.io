@@ -1,0 +1,276 @@
+/* =============================================================================
+   Projects page — layout (#page-projects)
+   ============================================================================= */
+.book-page--projects {
+  display: flex;
+  flex-direction: column;
+  overflow-x: visible;
+  overflow-y: visible;
+}
+
+.book-page-projects {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-width: 55rem;
+  width: 100%;
+  margin: 0 auto;
+  padding: 7rem 1.75rem 2rem;
+}
+
+.book-page-projects__header {
+  flex: 0 0 auto;
+  margin-bottom: 1.5rem;
+}
+
+.book-page-projects__header h1 {
+  margin-bottom: 0;
+}
+
+/* =============================================================================
+   Projects page — horizontal gallery
+   ============================================================================= */
+.project-gallery {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  /* Full viewport width so overflow clips only at screen edges, not the narrow column */
+  width: 100vw;
+  max-width: none;
+  margin-left: calc(50% - 50vw);
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.project-gallery::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.project-gallery:focus {
+  outline: none;
+}
+
+.project-gallery:focus-visible {
+  outline: 2px solid var(--color-border);
+  outline-offset: 2px;
+}
+
+.project-gallery-track {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.35rem;
+  width: max-content;
+  padding: 5.5rem 0 2rem;
+  box-sizing: content-box;
+}
+
+/* =============================================================================
+   Project cards
+   ============================================================================= */
+#page-projects .project-card {
+  position: relative;
+  flex: 0 0 17rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 0;
+}
+
+#page-projects .project-card__image {
+  display: block;
+  flex-shrink: 0;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 400px;
+  margin-bottom: 1.1rem;
+  object-fit: contain;
+  border-radius: 5px;
+  border: 1px solid var(--color-border);
+  transform-origin: center bottom;
+  will-change: transform;
+}
+
+#page-projects .project-card__caption {
+  width: 100%;
+  min-height: 7.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+#page-projects .project-card:not(.project-card--focused) .project-card__caption {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#page-projects .project-card--focused .project-card__caption {
+  visibility: visible;
+}
+
+#page-projects
+  .project-card--focused:not(.project-card--captions-visible)
+  .project-card__caption
+  .project-card__title,
+#page-projects
+  .project-card--focused:not(.project-card--captions-visible)
+  .project-card__caption
+  .project-card__description,
+#page-projects
+  .project-card--focused:not(.project-card--captions-visible)
+  .project-card__caption
+  .project-card__links {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+#page-projects
+  .project-card--focused.project-card--captions-visible
+  .project-card__caption
+  .project-card__title,
+#page-projects
+  .project-card--focused.project-card--captions-visible
+  .project-card__caption
+  .project-card__description,
+#page-projects
+  .project-card--focused.project-card--captions-visible
+  .project-card__caption
+  .project-card__links {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+#page-projects .project-card__title {
+  margin: 0 0 0.35rem;
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  line-height: 1.3;
+}
+
+#page-projects .project-card__description {
+  margin: 0 0 0.35rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--color-text);
+}
+
+#page-projects .project-card__links {
+  margin: 0;
+  font-size: 0.82rem;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+#page-projects .project-card__links a {
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+#page-projects .project-card__links a:hover {
+  color: var(--color-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #page-projects .project-card__caption .project-card__title,
+  #page-projects .project-card__caption .project-card__description,
+  #page-projects .project-card__caption .project-card__links {
+    opacity: 1;
+    transform: none !important;
+    transition: none;
+  }
+}
+
+/* =============================================================================
+   Tablet — tighter chrome, slightly smaller cards
+   ============================================================================= */
+@media (max-width: 900px) {
+  .book-page-projects {
+    padding: 5.25rem 2.75rem 1.5rem;
+    padding-left: max(2.75rem, env(safe-area-inset-left));
+    padding-right: max(2.75rem, env(safe-area-inset-right));
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+  }
+
+  .book-page-projects__header {
+    margin-bottom: 1.15rem;
+  }
+
+  .project-gallery-track {
+    padding: 3.5rem 0 1.5rem;
+    gap: 1.1rem;
+  }
+
+  #page-projects .project-card {
+    flex: 0 0 15rem;
+  }
+
+  #page-projects .project-card__image {
+    max-height: min(400px, 52vh);
+  }
+
+  #page-projects .project-card__caption {
+    min-height: 6.5rem;
+  }
+}
+
+/* =============================================================================
+   Phone — full-width feel, thumb-friendly scroll, scaled captions
+   ============================================================================= */
+@media (max-width: 640px) {
+  .book-page-projects {
+    padding: 4.25rem 2.5rem 1rem;
+    padding-left: max(2.5rem, env(safe-area-inset-left));
+    padding-right: max(2.5rem, env(safe-area-inset-right));
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .project-gallery {
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+  }
+
+  .project-gallery-track {
+    padding: 2.75rem 0 1.25rem;
+    gap: 0.85rem;
+  }
+
+  #page-projects .project-card {
+    flex: 0 0 min(14rem, 82vw);
+    scroll-snap-align: center;
+  }
+
+  #page-projects .project-card__image {
+    max-height: min(320px, 48vh);
+  }
+
+  #page-projects .project-card__title {
+    font-size: 0.98rem;
+  }
+
+  #page-projects .project-card__description {
+    font-size: 0.8125rem;
+  }
+
+  #page-projects .project-card__links {
+    font-size: 0.78rem;
+  }
+
+  #page-projects .project-card__caption {
+    min-height: 5.75rem;
+  }
+}

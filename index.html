@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#fdfcfa" />
+  <title>Amon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="./css/global.css" />
+  <link rel="stylesheet" href="./css/page-home.css" />
+  <link rel="stylesheet" href="./css/page-projects.css" />
+  <!-- GLTFLoader (and other three/examples jsm modules) import the bare specifier "three". -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="book">
+    <!-- Page fragments loaded from ./pages/*.html via js/main.js -->
+
+    <div id="fold-overlay" aria-hidden="true">
+      <svg id="fold-svg" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="fold-grad" x1="15%" y1="0%" x2="85%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff" />
+            <stop offset="45%" stop-color="#f0f0f0" />
+            <stop offset="100%" stop-color="#e0e0e0" />
+          </linearGradient>
+          <filter id="fold-shadow" x="-25%" y="-25%" width="150%" height="150%">
+            <feDropShadow dx="-1" dy="3" stdDeviation="5" flood-color="#000000" flood-opacity="0.08" />
+          </filter>
+        </defs>
+        <polygon id="fold-poly" points="" fill="url(#fold-grad)" filter="url(#fold-shadow)" />
+      </svg>
+    </div>
+  </div>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>

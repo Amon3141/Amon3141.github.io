@@ -1,0 +1,173 @@
+/* =============================================================================
+   Design tokens
+   ============================================================================= */
+:root {
+  --color-bg-page: #ffffff;
+  --color-text: #42464b;
+  --color-text-muted: #5c5c5c;
+  --color-border: #e5e5e5;
+  --color-app-bg: #f5f5f5;
+}
+
+/* =============================================================================
+   Base
+   ============================================================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-app-bg);
+  color: var(--color-text);
+  font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  font-feature-settings: "kern" 1;
+  overflow: hidden;
+}
+
+a {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+h1 {
+  margin: 0 0 1.25rem;
+  font-size: 2.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+strong {
+  font-weight: 600;
+}
+
+/* =============================================================================
+   Book shell (#book)
+   ============================================================================= */
+#book {
+  position: fixed;
+  inset: 0;
+}
+
+#book.is-peeling {
+  touch-action: none;
+}
+
+/* =============================================================================
+   Book pages — shared shell (.book-page)
+   ============================================================================= */
+.book-page {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  background: var(--color-bg-page);
+  --peel-shadow: 0;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.03);
+}
+
+.book-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgb(0 0 0 / var(--peel-shadow));
+  z-index: 1;
+}
+
+/* =============================================================================
+   Corner peel (page transition affordance)
+   ============================================================================= */
+.page-peel {
+  position: fixed;
+  width: 80px;
+  height: 80px;
+  z-index: 15;
+  cursor: grab;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+}
+
+.page-peel:active {
+  cursor: grabbing;
+}
+
+.page-peel--top-right {
+  top: 0;
+  right: 0;
+}
+
+/* =============================================================================
+   Visually hidden (screen readers)
+   ============================================================================= */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* =============================================================================
+   Fold overlay (peel flap SVG)
+   ============================================================================= */
+#fold-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  display: none;
+}
+
+#fold-overlay.is-visible {
+  display: block;
+}
+
+#fold-overlay svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* =============================================================================
+   Smaller viewports
+   ============================================================================= */
+@media (max-width: 640px) {
+  h1 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .page-peel {
+    width: 56px;
+    height: 56px;
+  }
+}
