@@ -39,6 +39,7 @@ export async function initHomeOrigami(container) {
     container.classList.add('is-reduced');
     container.textContent =
       'Fold animation is off when reduced motion is requested.';
+    container.setAttribute('data-origami-ready', '');
     return;
   }
 
@@ -229,6 +230,10 @@ export async function initHomeOrigami(container) {
       camera.lookAt(0, 0, 0);
       camera.updateProjectionMatrix();
       resizeRenderer();
+      renderer.render(scene, camera);
+      requestAnimationFrame(() => {
+        container.setAttribute('data-origami-ready', '');
+      });
     },
     undefined,
     (err) => {
@@ -237,6 +242,7 @@ export async function initHomeOrigami(container) {
       container.innerHTML = '';
       container.textContent =
         'Could not load origami preview. Serve the site from the repo root (e.g. python3 -m http.server) so origami.glb resolves.';
+      container.setAttribute('data-origami-ready', '');
     }
   );
 

@@ -55,6 +55,13 @@
   pointer-events: none;
   transform: rotate(-7deg);
   transform-origin: 100% 100%;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Avoid flash of “Hello :)” through a transparent WebGL canvas before the model draws. */
+.book-page-home__intro-inner:has(#home-origami[data-origami-ready]) .book-page-home__hello {
+  opacity: 1;
 }
 
 .book-page-home__origami {
