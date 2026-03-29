@@ -43,6 +43,24 @@
         <polygon id="fold-poly" points="" fill="url(#fold-grad)" filter="url(#fold-shadow)" />
       </svg>
     </div>
+
+    <!-- Outside .book-page so parent clip-path does not clip the hit target -->
+    <button
+      type="button"
+      class="page-peel page-peel--top-right"
+      id="peel-forward"
+      aria-label="Peel corner to open projects"
+    >
+      <span class="visually-hidden">Drag toward center to open projects</span>
+    </button>
+    <button
+      type="button"
+      class="page-peel page-peel--top-right"
+      id="peel-back"
+      aria-label="Peel corner to go back"
+    >
+      <span class="visually-hidden">Drag toward center to return home</span>
+    </button>
   </div>
 
   <script type="module" src="./js/main.js"></script>

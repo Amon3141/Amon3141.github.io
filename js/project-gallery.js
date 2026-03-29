@@ -30,7 +30,6 @@ export function initProjectGallery() {
   const EPS_SCALE = 0.002;
   const EPS_MARGIN_PX = 0.6;
   const EPS_Z = 0.08;
-  /** Caption exit fade in page-projects.css (`0.24s`); buffer for class cleanup. */
   const CAPTION_EXIT_MS = 240;
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -50,7 +49,6 @@ export function initProjectGallery() {
   let stale = false;
   let needsPadding = true;
   let lastFocusedCard = null;
-  /** @type {WeakMap<Element, ReturnType<typeof setTimeout>>} */
   const captionsExitingTimers = new WeakMap();
 
   function clearCaptionsExitingTimer(card) {

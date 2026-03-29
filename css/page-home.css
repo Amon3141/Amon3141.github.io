@@ -1,6 +1,11 @@
 /* =============================================================================
    Home page (#page-home)
    ============================================================================= */
+#page-home.book-page {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
 .book-page-home {
   position: relative;
   z-index: 2;
@@ -90,6 +95,10 @@
   outline: none;
 }
 
+.book-page-home__origami.is-touch-fold {
+  touch-action: none;
+}
+
 .book-page-home__origami.is-reduced {
   display: flex;
   align-items: center;
@@ -106,9 +115,9 @@
 }
 
 /* =============================================================================
-   Middle — tablet only: origami position (text layout same as desktop)
+   Middle
    ============================================================================= */
-@media (min-width: 641px) and (max-width: 750px) {
+@media (max-width: 750px) {
   .book-page-home__intro {
     padding-right: 9.5rem;
   }
@@ -152,13 +161,13 @@
   .book-page-home__intro-inner {
     position: relative;
     padding-right: 0;
-    padding-top: 0.2rem;
+    padding-top: 10rem;
   }
 
   .book-page-home__origami {
     left: auto;
-    right: 0;
-    top: -10rem;
+    right: -1rem;
+    top: -0.5rem;
     bottom: auto;
     width: min(11.5rem, 52vw);
     transform: rotate(-8deg);
@@ -168,8 +177,8 @@
   .book-page-home__hello {
     font-size: 0.9rem;
     left: auto;
-    right: 4rem;
-    top: -5.3rem;
+    right: 3rem;
+    top: 4.2rem;
     transform: rotate(-8deg);
     transform-origin: 100% 0%;
   }
@@ -191,5 +200,12 @@
     top: -3.2rem;
     transform: none;
     transform-origin: 100% 0%;
+  }
+}
+
+@media (max-width: 349px) {
+  #home-origami,
+  .book-page-home__hello {
+    display: none !important;
   }
 }

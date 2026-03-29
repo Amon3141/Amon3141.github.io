@@ -8,6 +8,16 @@ const SHADOW_MAX = 0.045;
 const ANIM_MS = 420;
 const ANIM_MS_REVERT = 380;
 
+const isTouchLike =
+  typeof window !== 'undefined' &&
+  (window.matchMedia('(pointer: coarse)').matches ||
+    window.matchMedia('(max-width: 640px)').matches);
+
+/** Default peel inset / revert target; must match .page-peel width & height in global.css. */
+const PEEL_CORNER_PX = 80;
+const ANIM_MS_MOBILE = 300;
+const ANIM_MS_REVERT_MOBILE = 260;
+
 /** Perpendicular bisector of segment C–P: f(x,y) = |X-C|² - |X-P|² = a x + b y + c (linear). */
 function bisectorCoeffsForCorners(Cx, Cy, px, py) {
   const a = 2 * (px - Cx);
@@ -155,6 +165,18 @@ export function initBookPeel() {
   let animTo = null;
   let animOnDone = null;
 
+  function updatePeelBusyClass() {
+    const busy = drag != null || animating;
+    book.classList.toggle('is-peel-busy', busy);
+  }
+
+  function cancelPendingPointerPeel() {
+    if (drag && drag.peelRaf != null) {
+      cancelAnimationFrame(drag.peelRaf);
+      drag.peelRaf = null;
+    }
+  }
+
   function setStack() {
     if (state === 'home') {
       pageHome.style.zIndex = '3';
@@ -190,12 +212,13 @@ export function initBookPeel() {
     const W = window.innerWidth;
     const H = window.innerHeight;
     book.classList.remove('is-peeling');
+    const s = PEEL_CORNER_PX;
     if (state === 'home') {
       pageProjects.style.clipPath = '';
-      applyPeel(W, H, pageHome, W, 0, W - 75, 75, 'forward');
+      applyPeel(W, H, pageHome, W, 0, W - s, s, 'forward');
     } else {
       pageHome.style.clipPath = '';
-      applyPeel(W, H, pageProjects, W, 0, W - 75, 75, 'back');
+      applyPeel(W, H, pageProjects, W, 0, W - s, s, 'back');
     }
   }
 
@@ -208,10 +231,10 @@ export function initBookPeel() {
       dx = n.px - Cx;
       dy = n.py - Cy;
     }
-    const baseBoost = 2.2;
+    const baseBoost = 1.8;
     const ref = Math.min(W, H) * 0.42;
     const closeness = Math.max(0, 1 - Math.hypot(dx, dy) / ref);
-    const boost = baseBoost + 1.5 * closeness;
+    const boost = baseBoost + 1.2 * closeness;
     let npx = Cx + dx * boost;
     let npy = Cy + dy * boost;
     npx = Math.max(-W * 1.5, Math.min(W * 2.5, npx));
@@ -295,6 +318,7 @@ export function initBookPeel() {
     if (!mode) return;
     cancelAnimationFrame(animFrame);
     animating = true;
+    updatePeelBusyClass();
     animFrom = from;
     animTo = to;
     animOnDone = onDone;
@@ -316,6 +340,7 @@ export function initBookPeel() {
         animFrame = requestAnimationFrame(tick);
       } else {
         animating = false;
+        updatePeelBusyClass();
         animOnDone && animOnDone();
         animOnDone = null;
       }
@@ -361,15 +386,23 @@ export function initBookPeel() {
     }
     drag.lastTime = now;
     drag.lastClientX = e.clientX;
+    drag.pendingClientX = e.clientX;
+    drag.pendingClientY = e.clientY;
 
-    const o = applyPeelFromClient(drag.mode, e.clientX, e.clientY);
-    drag.lastPx = o.px;
-    drag.lastPy = o.py;
+    if (drag.peelRaf != null) return;
+    drag.peelRaf = requestAnimationFrame(() => {
+      drag.peelRaf = null;
+      if (!drag) return;
+      const o = applyPeelFromClient(drag.mode, drag.pendingClientX, drag.pendingClientY);
+      drag.lastPx = o.px;
+      drag.lastPy = o.py;
+    });
   }
 
   function onGlobalPointerUp(e) {
     if (e.pointerId !== activePointerId || !drag || reducedMotion) return;
     e.preventDefault();
+    cancelPendingPointerPeel();
     const W = window.innerWidth;
     const H = window.innerHeight;
     const o = applyPeelFromClient(drag.mode, e.clientX, e.clientY);
@@ -386,31 +419,34 @@ export function initBookPeel() {
     detachGlobalPointerListeners();
     book.classList.remove('is-peeling');
     drag = null;
+    updatePeelBusyClass();
 
     const commit = shouldCommitPeel(mode, e.clientX, e.clientY, vx);
+    const dur = isTouchLike ? ANIM_MS_MOBILE : ANIM_MS;
+    const durRevert = isTouchLike ? ANIM_MS_REVERT_MOBILE : ANIM_MS_REVERT;
 
     if (mode === 'forward') {
       if (commit) {
         const end = { px: -W * 1.5, py: H * 0.92 };
         startAnim(from, end, 'forward', () => {
           finishForward();
-        });
+        }, dur);
       } else {
-        const corner = { px: W - 75, py: 75 };
+        const corner = { px: W - PEEL_CORNER_PX, py: PEEL_CORNER_PX };
         startAnim(from, corner, 'forward', () => {
           applyDefaultPeel();
-        }, ANIM_MS_REVERT);
+        }, durRevert);
       }
     } else if (commit) {
       const end = { px: -W * 1.5, py: H * 0.92 };
       startAnim(from, end, 'back', () => {
         finishBack();
-      });
+      }, dur);
     } else {
-      const corner = { px: W - 75, py: 75 };
+      const corner = { px: W - PEEL_CORNER_PX, py: PEEL_CORNER_PX };
       startAnim(from, corner, 'back', () => {
         applyDefaultPeel();
-      }, ANIM_MS_REVERT);
+      }, durRevert);
     }
   }
 
@@ -427,8 +463,12 @@ export function initBookPeel() {
       lastPy: o.py,
       lastClientX: e.clientX,
       lastTime: performance.now(),
-      vx: 0
+      vx: 0,
+      pendingClientX: e.clientX,
+      pendingClientY: e.clientY,
+      peelRaf: null
     };
+    updatePeelBusyClass();
     try {
       e.currentTarget.setPointerCapture(e.pointerId);
     } catch (_) {}

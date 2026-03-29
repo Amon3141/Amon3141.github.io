@@ -107,6 +107,11 @@ export async function initHomeOrigami(container) {
     resetPhase = null;
   }
 
+  const useDragToFold =
+    window.matchMedia('(hover: none)').matches || window.matchMedia('(pointer: coarse)').matches;
+
+  let foldDragPointerId = null;
+
   function updatePointerFoldTarget(clientX, clientY) {
     const r = container.getBoundingClientRect();
     const outside =
@@ -147,21 +152,61 @@ export async function initHomeOrigami(container) {
     }
   }
 
-  document.addEventListener(
-    'mousemove',
-    (e) => {
-      updatePointerFoldTarget(e.clientX, e.clientY);
-    },
-    { passive: true }
-  );
+  if (useDragToFold) {
+    container.classList.add('is-touch-fold');
+  }
 
-  container.addEventListener('pointerleave', () => {
-    if (wasInBand) {
-      scheduleResetHold(lastInteractiveT);
+  if (!useDragToFold) {
+    document.addEventListener(
+      'mousemove',
+      (e) => {
+        updatePointerFoldTarget(e.clientX, e.clientY);
+      },
+      { passive: true }
+    );
+
+    container.addEventListener('pointerleave', () => {
+      if (wasInBand) {
+        scheduleResetHold(lastInteractiveT);
+      }
+      wasInBand = false;
+      pointerInBand = false;
+    });
+  } else {
+    function endFoldDrag(e) {
+      if (foldDragPointerId == null || e.pointerId !== foldDragPointerId) return;
+      try {
+        container.releasePointerCapture(e.pointerId);
+      } catch (_) {}
+      foldDragPointerId = null;
+      if (wasInBand) {
+        scheduleResetHold(lastInteractiveT);
+      }
+      wasInBand = false;
+      pointerInBand = false;
     }
-    wasInBand = false;
-    pointerInBand = false;
-  });
+
+    container.addEventListener(
+      'pointerdown',
+      (e) => {
+        if (e.button !== 0) return;
+        foldDragPointerId = e.pointerId;
+        try {
+          container.setPointerCapture(e.pointerId);
+        } catch (_) {}
+        updatePointerFoldTarget(e.clientX, e.clientY);
+      },
+      { passive: true }
+    );
+
+    container.addEventListener('pointermove', (e) => {
+      if (foldDragPointerId == null || e.pointerId !== foldDragPointerId) return;
+      updatePointerFoldTarget(e.clientX, e.clientY);
+    });
+
+    container.addEventListener('pointerup', endFoldDrag);
+    container.addEventListener('pointercancel', endFoldDrag);
+  }
 
   function resizeRenderer() {
     const w = container.clientWidth;
@@ -254,6 +299,9 @@ export async function initHomeOrigami(container) {
   function animate() {
     requestAnimationFrame(animate);
     clock.getDelta();
+    if (document.getElementById('book')?.classList.contains('is-peel-busy')) {
+      return;
+    }
     if (mixer && clipAction && clipDuration > 0) {
       let foldTarget = 0;
       let factor = lerpFactorActive;
