@@ -1,0 +1,11 @@
+- problem-solving
+  - dark: #0C0D0E (code)
+  - light: #C0D0E0
+- cafe-hopping
+  - light: #c0ffee (coffee)
+  - dark: ?
+- running
+  - dark: #042195 or #421950 (42.195) — site uses #042195
+  - light: ?
+- walking (neiborhood)
+  - light/dark: #10CA7E (locate)

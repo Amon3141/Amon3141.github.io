@@ -43,6 +43,44 @@
   width: 100%;
 }
 
+/* Hobby phrases */
+.book-page-home__intro-inner .interest {
+  font-weight: inherit;
+  white-space: nowrap;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.book-page-home__intro-inner .interest--problem {
+  padding: 0.12em 0.35em 0.14em;
+  border-radius: 0;
+  background: #0c0d0e;
+  color: #fbfbf9;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.94em;
+  letter-spacing: -0.02em;
+}
+
+.book-page-home__intro-inner .interest--cafe {
+  color: #42464b;
+  text-decoration: underline;
+  text-decoration-color: #c0ffee;
+  text-decoration-thickness: 0.38em;
+  text-underline-offset: -0.2em;
+  text-decoration-skip-ink: none;
+}
+
+.book-page-home__intro-inner .interest--running {
+  color: #042195;
+  font-weight: 600;
+}
+
+.book-page-home__intro-inner .interest--walking {
+  text-decoration: underline;
+  text-decoration-color: #10ca7e;
+  text-underline-offset: 3px;
+}
+
 /* Same stacking layer as origami (below it); tweak top/right/left/transform to place. */
 .book-page-home__hello {
   position: absolute;
